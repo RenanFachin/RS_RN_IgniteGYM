@@ -1,9 +1,5 @@
-// https://docs.nativebase.io/vstack
-// https://docs.nativebase.io/image
-// https://docs.nativebase.io/text
-// https://docs.nativebase.io/heading
-// https://docs.nativebase.io/scrollview
-import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
+import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
+
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
@@ -12,7 +8,7 @@ import BackgroundImg from '@assets/background.png'
 // https://github.com/kristerkari/react-native-svg-transformer
 import LogoSvg from '@assets/logo.svg'
 
-export function SignIn() {
+export function SignUp() {
   return (
     <ScrollView _contentContainerStyle={
       { flexGrow: 1 }} // forçando a ocupação da página toda
@@ -36,8 +32,10 @@ export function SignIn() {
 
         <Center >
           <Heading color={'gray.100'} fontSize={'xl'} mb={6} fontFamily={'heading'}>
-            Acesse sua conta
+            Crie sua conta
           </Heading>
+
+          <Input placeholder="Nome" />
 
           <Input
             placeholder="E-mail"
@@ -50,20 +48,18 @@ export function SignIn() {
             secureTextEntry={true}
           />
 
-          <Button title="Acessar" />
+
+          <Button title="Criar e acessar" />
 
         </Center>
 
-        <Center mt={24}>
-          <Text color='gray.100' fontSize='sm' mb={3} fontFamily='body'>
-            Ainda não tem acesso?
-          </Text>
 
-          <Button
-            title="Criar conta"
-            variant="outline"
-          />
-        </Center>
+        <Button
+          title="Voltar para o login"
+          variant="outline"
+          mt={24}
+        />
+
       </VStack >
     </ScrollView>
   )
