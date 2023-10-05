@@ -28,7 +28,13 @@ export function AppRoutes() {
   const iconSize = theme.sizes[6]
 
   return (
-    <Navigator screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
+    <Navigator screenOptions={{
+      headerShown: false,
+      tabBarShowLabel: false,
+      tabBarActiveTintColor: theme.colors.green[500],
+      tabBarInactiveTintColor: theme.colors.gray[200]
+    }}
+    >
       {/* A ordem importa */}
       <Screen
         name='home'
