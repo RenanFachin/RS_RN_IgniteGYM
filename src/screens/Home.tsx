@@ -40,6 +40,7 @@ export function Home() {
         }}
         my={10}
         maxH={10} // garantindo que a FLatList utilzize apenas o espaço delimitado
+        minH={10} // garantindo que a FlatList tenha uma altura mínima
       />
 
       <VStack flex={1} px={8}>
