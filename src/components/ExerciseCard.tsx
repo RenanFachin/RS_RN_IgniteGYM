@@ -6,7 +6,7 @@ interface ExerciseCardProps extends TouchableOpacityProps { }
 
 export function ExerciseCard({ ...props }: ExerciseCardProps) {
   return (
-    <TouchableOpacity {...props}>
+    <TouchableOpacity activeOpacity={0.6} {...props}>
       <HStack bg="gray.500" alignItems="center" p={2} pr={4} rounded="md" mb={3}>
         <Image
           source={{ uri: 'https://thumb.mais.uol.com.br/16669847-large.jpg?ver=0' }}
