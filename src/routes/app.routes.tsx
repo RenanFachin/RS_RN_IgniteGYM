@@ -1,5 +1,8 @@
+// https://reactnavigation.org/docs/bottom-tab-navigator/
 import { createBottomTabNavigator, BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import { useTheme } from 'native-base'
+
+// https://reactnative.dev/docs/platform
 import { Platform } from 'react-native'
 
 import HomeSVG from '@assets/home.svg'
