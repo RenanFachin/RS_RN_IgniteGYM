@@ -4,6 +4,10 @@ import { UserPhoto } from "@components/UserPhoto";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 
+// Image Picker - https://docs.expo.dev/versions/latest/sdk/imagepicker/
+import * as ImagePicker from 'expo-image-picker'
+
+
 // https://docs.nativebase.io/skeleton
 import { Center, ScrollView, VStack, Skeleton, Text, Heading } from "native-base";
 import { TouchableOpacity } from "react-native";
@@ -12,13 +16,34 @@ const PHOTO_SIZE = 33
 
 export function Profile() {
   const [isPhotoLoaded, setIsPhotoLoaded] = useState<boolean>(false)
+  const [userPhoto, setUserPhoto] = useState<string>('')
+
+  async function handleUserPhotoSelect(){
+    // acessando o álbum do usuário
+    const photoSelected = await ImagePicker.launchImageLibraryAsync({
+      // Definindo algumas propriedades
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+      aspect: [4, 4],
+      allowsEditing: true, // Habilitando edição da imagem (recortar e etc)
+    })
+
+    // Usuário cancelando o submit da foto
+    if(photoSelected.canceled){
+      return
+    }
+
+    // Salvando a foto enviada e salvando no state
+    const [image] = photoSelected.assets
+    setUserPhoto(image.uri)
+  }
 
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
 
       {/* ScrollView para habilitar uma rolagem da tela (motivo: ela vai ocupar toda e quando o usuário clicar no input vai subir o teclado) */}
-      <ScrollView contentContainerStyle={{paddingBottom: 20}}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         <Center mt={6} px={10}>
           {
             isPhotoLoaded ?
@@ -32,7 +57,7 @@ export function Profile() {
               :
               <UserPhoto
                 source={{
-                  uri: 'https://github.com/RenanFachin.png'
+                  uri: userPhoto
                 }}
                 alt="Foto de perfil do usuário"
                 size={PHOTO_SIZE}
@@ -40,7 +65,7 @@ export function Profile() {
               />
           }
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleUserPhotoSelect}>
             <Text color="green.500" fontWeight="bold" fontSize="md" mt={2} mb={8}>
               Alterar foto
             </Text>
