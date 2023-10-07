@@ -7,10 +7,13 @@ import { Button } from "@components/Button";
 // Image Picker - https://docs.expo.dev/versions/latest/sdk/imagepicker/
 import * as ImagePicker from 'expo-image-picker'
 
+// File System - https://docs.expo.dev/versions/latest/sdk/filesystem/
+import * as FileSystem from 'expo-file-system';
+
 
 // https://docs.nativebase.io/skeleton
 import { Center, ScrollView, VStack, Skeleton, Text, Heading } from "native-base";
-import { TouchableOpacity } from "react-native";
+import { Alert, TouchableOpacity } from "react-native";
 
 const PHOTO_SIZE = 33
 
@@ -41,6 +44,15 @@ export function Profile() {
       const [image] = photoSelected.assets
 
       if (image.uri) {
+        // verificando o tamanho do arquivo (ele retorna o tamanho em bytes)
+        const photoInfo = await FileSystem.getInfoAsync(image.uri)
+        // console.log(photoInfo)
+
+        const limitSize = 15 * 1024 * 1024 // 15mb
+        if (photoInfo.exists && photoInfo.size > limitSize) {
+          return Alert.alert("Essa imagem é muito grande, escolha uma de até 15 mb")
+        }
+
         setUserPhoto(image.uri)
       }
 
