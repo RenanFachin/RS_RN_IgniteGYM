@@ -5,16 +5,30 @@ import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
+// Forms
+import { useForm, Controller } from 'react-hook-form'
+
 import BackgroundImg from '@assets/background.png'
 
 // https://github.com/kristerkari/react-native-svg-transformer
 import LogoSvg from '@assets/logo.svg'
 
 export function SignUp() {
+
+  // Forms
+  const { control } = useForm()
+
   const navigation = useNavigation()
 
-  function handleGoBack(){
+  function handleGoBack() {
     navigation.goBack()
+  }
+
+  function handleRegisterUser() {
+
+    const newUser = {}
+
+    console.log(newUser)
   }
 
   return (
@@ -44,21 +58,67 @@ export function SignUp() {
             Crie sua conta
           </Heading>
 
-          <Input placeholder="Nome" />
-
-          <Input
-            placeholder="E-mail"
-            keyboardType='email-address'
-            autoCapitalize='none'
+          <Controller
+            control={control}
+            name="name"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Nome"
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
           />
 
-          <Input
-            placeholder="Senha"
-            secureTextEntry={true}
+          <Controller
+            control={control}
+            name="email"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="E-mail"
+                keyboardType='email-address'
+                autoCapitalize='none'
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="password"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Senha"
+                secureTextEntry={true}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="confirmPassword"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Digite a senha novamente"
+                secureTextEntry={true}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
           />
 
 
-          <Button title="Criar e acessar" />
+          <Button
+            title="Criar e acessar"
+            onPress={handleRegisterUser}
+          />
 
         </Center>
 
