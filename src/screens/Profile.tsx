@@ -12,14 +12,18 @@ import * as FileSystem from 'expo-file-system';
 
 
 // https://docs.nativebase.io/skeleton
-import { Center, ScrollView, VStack, Skeleton, Text, Heading } from "native-base";
-import { Alert, TouchableOpacity } from "react-native";
+// https://docs.nativebase.io/toast
+import { Center, ScrollView, VStack, Skeleton, Text, Heading, useToast } from "native-base";
+import { TouchableOpacity } from "react-native";
+
 
 const PHOTO_SIZE = 33
 
 export function Profile() {
   const [isPhotoLoaded, setIsPhotoLoaded] = useState<boolean>(false)
   const [userPhoto, setUserPhoto] = useState<string>('')
+
+  const toast = useToast()
 
   async function handleUserPhotoSelect() {
     setIsPhotoLoaded(true)
@@ -50,7 +54,11 @@ export function Profile() {
 
         const limitSize = 15 * 1024 * 1024 // 15mb
         if (photoInfo.exists && photoInfo.size > limitSize) {
-          return Alert.alert("Essa imagem é muito grande, escolha uma de até 15 mb")
+          return toast.show({
+            title: 'Essa imagem é muito grande, escolha uma de até 15 mb',
+            placement: 'top',
+            bgColor: 'red.500'
+          })
         }
 
         setUserPhoto(image.uri)
