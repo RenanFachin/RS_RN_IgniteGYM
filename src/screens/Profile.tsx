@@ -18,24 +18,37 @@ export function Profile() {
   const [isPhotoLoaded, setIsPhotoLoaded] = useState<boolean>(false)
   const [userPhoto, setUserPhoto] = useState<string>('')
 
-  async function handleUserPhotoSelect(){
-    // acessando o álbum do usuário
-    const photoSelected = await ImagePicker.launchImageLibraryAsync({
-      // Definindo algumas propriedades
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-      aspect: [4, 4],
-      allowsEditing: true, // Habilitando edição da imagem (recortar e etc)
-    })
+  async function handleUserPhotoSelect() {
+    setIsPhotoLoaded(true)
 
-    // Usuário cancelando o submit da foto
-    if(photoSelected.canceled){
-      return
+    try {
+      // acessando o álbum do usuário
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        // Definindo algumas propriedades
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true, // Habilitando edição da imagem (recortar e etc)
+      })
+
+      // Usuário cancelando o submit da foto
+      if (photoSelected.canceled) {
+        return
+      }
+
+
+      // Salvando a foto enviada e salvando no state
+      const [image] = photoSelected.assets
+
+      if (image.uri) {
+        setUserPhoto(image.uri)
+      }
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsPhotoLoaded(false)
     }
-
-    // Salvando a foto enviada e salvando no state
-    const [image] = photoSelected.assets
-    setUserPhoto(image.uri)
   }
 
   return (
