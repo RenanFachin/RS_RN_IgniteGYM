@@ -16,7 +16,7 @@ import LogoSvg from '@assets/logo.svg'
 export function SignUp() {
 
   // Forms
-  const { control } = useForm()
+  const { control, handleSubmit } = useForm()
 
   const navigation = useNavigation()
 
@@ -24,11 +24,11 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function handleRegisterUser() {
+  function handleRegisterUser(data: any) {
 
     const newUser = {}
 
-    console.log(newUser)
+    console.log(data)
   }
 
   return (
@@ -110,6 +110,9 @@ export function SignUp() {
                 secureTextEntry={true}
                 onChangeText={onChange}
                 value={value}
+                // Fazendo o usuário conseguir enviar a partir do teclado
+                onSubmitEditing={handleSubmit(handleRegisterUser)}
+                returnKeyType="send"
               />
             )}
           />
@@ -117,7 +120,7 @@ export function SignUp() {
 
           <Button
             title="Criar e acessar"
-            onPress={handleRegisterUser}
+            onPress={handleSubmit(handleRegisterUser)}
           />
 
         </Center>
