@@ -62,6 +62,11 @@ export function Profile() {
         }
 
         setUserPhoto(image.uri)
+        toast.show({
+          title: 'Imagem alterada com sucesso!',
+          placement: 'top',
+          bgColor: 'green.500'
+        })
       }
 
     } catch (error) {
