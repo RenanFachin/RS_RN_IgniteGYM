@@ -5,18 +5,25 @@ import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
-// Forms
-import { useForm, Controller } from 'react-hook-form'
-
 import BackgroundImg from '@assets/background.png'
 
 // https://github.com/kristerkari/react-native-svg-transformer
 import LogoSvg from '@assets/logo.svg'
 
+// Forms
+import { useForm, Controller } from 'react-hook-form'
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+
 export function SignUp() {
 
   // Forms
-  const { control, handleSubmit } = useForm()
+  const { control, handleSubmit } = useForm<FormDataProps>()
 
   const navigation = useNavigation()
 
@@ -24,7 +31,7 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function handleRegisterUser(data: any) {
+  function handleRegisterUser(data: FormDataProps) {
 
     const newUser = {}
 
