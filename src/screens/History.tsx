@@ -27,7 +27,7 @@ export function History() {
         )}
         // renderizando o cabeçalho da lista
         renderSectionHeader={({section}) => (
-          <Heading color="gray.300" fontSize="sm" mt={8} mb={2}>
+          <Heading color="gray.300" fontSize="sm" mt={8} mb={2} fontFamily="heading"> 
             {section.title}
           </Heading>
         )}

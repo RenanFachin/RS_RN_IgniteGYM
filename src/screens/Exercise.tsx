@@ -34,7 +34,7 @@ export function Exercise() {
 
         <HStack justifyContent="space-between" my={6} alignItems="center" >
           {/* https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink */}
-          <Heading color="gray.100" fontSize="lg" flexShrink={1}>
+          <Heading color="gray.100" fontSize="lg" flexShrink={1} fontFamily="heading">
             Puxada frontal
           </Heading>
 

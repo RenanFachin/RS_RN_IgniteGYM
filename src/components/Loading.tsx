@@ -7,7 +7,7 @@ export function Loading() {
     <Center flex={1} bg="gray.700">
       <Spinner color="green.500" size='lg' accessibilityLabel="Loading" />
 
-      <Heading fontSize={'md'} color="green.500" marginTop={2}>
+      <Heading fontSize={'md'} color="green.500" marginTop={2} fontFamily="heading">
         Loading
       </Heading>
     </Center>
