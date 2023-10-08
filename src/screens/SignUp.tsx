@@ -14,6 +14,7 @@ import LogoSvg from '@assets/logo.svg'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
+
 type FormDataProps = {
   name: string;
   email: string;
@@ -29,10 +30,17 @@ const signUpSchemaValidation = yup.object({
   confirmPassword: yup.string().required('Informe a senha novamente').oneOf([yup.ref('password')], 'A confirmação da senha confere.')
 })
 
+const defatulInputValues = {
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
+}
+
 export function SignUp() {
 
   // Forms
-  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+  const { control, handleSubmit, formState: { errors }, reset } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchemaValidation)
   })
 
@@ -45,6 +53,8 @@ export function SignUp() {
   function handleRegisterUser(data: FormDataProps) {
 
     const newUser = {}
+
+    reset(defatulInputValues)
 
     console.log(data)
   }
@@ -152,7 +162,7 @@ export function SignUp() {
         <Button
           title="Voltar para o login"
           variant="outline"
-          mt={24}
+          mt={16}
           onPress={handleGoBack}
         />
 
