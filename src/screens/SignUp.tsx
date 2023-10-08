@@ -10,7 +10,9 @@ import BackgroundImg from '@assets/background.png'
 // https://github.com/kristerkari/react-native-svg-transformer
 import LogoSvg from '@assets/logo.svg'
 
-// Forms
+// Forms e Validation
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 type FormDataProps = {
   name: string;
@@ -19,11 +21,20 @@ type FormDataProps = {
   confirmPassword: string;
 }
 
+// Criando schema de validação
+const signUpSchemaValidation = yup.object({
+  name: yup.string().required('Informe o nome'),
+  email: yup.string().required('Informe o email').email('E-mail inválido'),
+  password: yup.string().required('Informe a senha').min(6, 'A senha deve pelo menos 6 dígitos'),
+  confirmPassword: yup.string().required('Informe a senha novamente').oneOf([yup.ref('password')], 'A confirmação da senha confere.')
+})
 
 export function SignUp() {
 
   // Forms
-  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>()
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchemaValidation)
+  })
 
   const navigation = useNavigation()
 
@@ -68,9 +79,6 @@ export function SignUp() {
           <Controller
             control={control}
             name="name"
-            rules={{
-              required: 'Informe o nome.'
-            }}
             // dizer o input
             render={({ field: { onChange, value } }) => (
               <Input
@@ -85,13 +93,6 @@ export function SignUp() {
           <Controller
             control={control}
             name="email"
-            rules={{
-              required: 'Informe o email.',
-              pattern: {
-                value:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'E-mail inválido'
-              }
-            }}
             // dizer o input
             render={({ field: { onChange, value } }) => (
               <Input
@@ -109,9 +110,6 @@ export function SignUp() {
           <Controller
             control={control}
             name="password"
-            rules={{
-              required: 'Informe a senha.'
-            }}
             // dizer o input
             render={({ field: { onChange, value } }) => (
               <Input
@@ -119,6 +117,7 @@ export function SignUp() {
                 secureTextEntry={true}
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.password?.message}
               />
             )}
           />
@@ -136,6 +135,7 @@ export function SignUp() {
                 // Fazendo o usuário conseguir enviar a partir do teclado
                 onSubmitEditing={handleSubmit(handleRegisterUser)}
                 returnKeyType="send"
+                errorMessage={errors.confirmPassword?.message}
               />
             )}
           />

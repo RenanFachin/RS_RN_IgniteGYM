@@ -47,8 +47,10 @@ O que é possível que o usuário faça na aplicação.
 - [x] A imagem de perfil do usuário não deve poder ter tamanho superior a 15MB
 - [ ] Usuários não autenticados não podem ter acesso as rotas da aplicação
 
+
 ## Requisitos não funcionais
 - [ ] A senha do usuário precisa estar criptografada
+- [ ] A senha do usuário deve ter ao menos 6 caracteres
 - [ ] Os dados da aplicação precisam ser persistidos
 - [ ] O usuário deve ser identificado por um JWT
 - [x] As rotas de autenticação devem ser StackNavigator
