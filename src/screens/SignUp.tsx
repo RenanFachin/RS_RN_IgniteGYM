@@ -30,7 +30,7 @@ const signUpSchemaValidation = yup.object({
   confirmPassword: yup.string().required('Informe a senha novamente').oneOf([yup.ref('password')], 'A confirmação da senha confere.')
 })
 
-const defatulInputValues = {
+const defaultInputValues = {
   name: '',
   email: '',
   password: '',
@@ -50,13 +50,24 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function handleRegisterUser(data: FormDataProps) {
+  async function handleRegisterUser({ name, email, password }: FormDataProps) {
 
-    const newUser = {}
 
-    reset(defatulInputValues)
+    await fetch('http://192.168.0.6:3333/users', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name, email, password
+      })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
 
-    console.log(data)
+    reset(defaultInputValues)
+
   }
 
   return (
