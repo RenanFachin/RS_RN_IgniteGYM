@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 
 // https://docs.nativebase.io/vstack | https://docs.nativebase.io/image | https://docs.nativebase.io/text | https://docs.nativebase.io/heading | https://docs.nativebase.io/scrollview
-import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base'
+import { VStack, Image, Text, Center, Heading, ScrollView, useToast } from 'native-base'
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
 
@@ -16,6 +16,8 @@ import { useAuth } from '@hooks/useAuth'
 
 // Form
 import { Controller, useForm } from 'react-hook-form'
+import { AppError } from '@utils/AppError'
+import { useState } from 'react'
 
 type FormData = {
   email: string;
@@ -24,8 +26,11 @@ type FormData = {
 
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const { signIn } = useAuth()
 
+  const toast = useToast()
   // Passando a definição de tipagem para o navigation (de acordo com o contexto, neste caso, o de auth)
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
@@ -37,7 +42,28 @@ export function SignIn() {
   }
 
   async function handleSignIn({ email, password }: FormData) {
-    await signIn(email, password)
+    try {
+      // Alterando o valor do state para modificar a interface
+      setIsLoading(true)
+
+      await signIn(email, password)
+
+
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const title = isAppError ? error.message : 'Não foi possível relizar o login.'
+
+      setIsLoading(false)
+
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+
+      
+    }
   }
 
   return (
@@ -101,6 +127,7 @@ export function SignIn() {
           <Button
             title="Acessar"
             onPress={handleSubmit(handleSignIn)}
+            isLoading={isLoading}
           />
 
         </Center>
