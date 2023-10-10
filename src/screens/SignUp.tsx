@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 
-import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
+import { VStack, Image, Text, Center, Heading, ScrollView, useToast } from "native-base";
 
 import { Input } from '@components/Input'
 import { Button } from '@components/Button'
@@ -17,6 +17,7 @@ import { useForm, Controller } from 'react-hook-form'
 
 // API
 import { api } from '@services/api';
+import axios from 'axios';
 
 type FormDataProps = {
   name: string;
@@ -47,6 +48,7 @@ export function SignUp() {
     resolver: yupResolver(signUpSchemaValidation)
   })
 
+  const toast = useToast()
   const navigation = useNavigation()
 
   function handleGoBack() {
@@ -55,11 +57,24 @@ export function SignUp() {
 
   async function handleRegisterUser({ name, email, password }: FormDataProps) {
 
-    const response = await api.post('/users', {
-      name, email, password
-    })
+    try {
+      const response = await api.post('/users', {
+        name, email, password
+      })
 
-    // console.log(response)
+      console.log(response.data)
+    } catch (error) {
+      if(axios.isAxiosError(error)){
+        return toast.show({
+          title: (error.response?.data.message),
+          placement: 'top',
+          bgColor: 'red.500'
+        })
+      }
+
+      console.log(error)
+    }
+
 
     reset(defaultInputValues)
 
