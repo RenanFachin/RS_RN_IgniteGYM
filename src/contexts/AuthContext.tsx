@@ -1,9 +1,10 @@
 import { ReactNode, createContext, useState } from "react";
 import { UserDTO } from "@dtos/UserDTO";
+import { api } from "@services/api";
 
 export type AuthContextDataProps = {
   user: UserDTO;
-  signIn: (email: string, password: string) => void
+  signIn: (email: string, password: string) => Promise<void> // promise pq é async
 }
 
 export const AuthContext = createContext<AuthContextDataProps>({} as AuthContextDataProps)
@@ -14,20 +15,20 @@ type AuthContextProviderProps = {
 }
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
-  const [user, setUser] = useState({
-    id: '1',
-    name: 'Renan',
-    email: 'renan.fachin@email.com',
-    avatar: 'renan.png'
-  })
+  const [user, setUser] = useState<UserDTO>({} as UserDTO)
 
-  function signIn(email: string, password: string) {
-    setUser({
-      id: '',
-      name: '',
-      email: email,
-      avatar: '',
-    })
+  async function signIn(email: string, password: string) {
+    try {
+      const response = await api.post('/sessions', { email, password })
+
+      // Caso exista um usuário retornado pelo back-end
+      if (response.data.user) {
+        setUser(response.data.user)
+      }
+
+    } catch (error) {
+      throw error;
+    }
   }
 
   return (
