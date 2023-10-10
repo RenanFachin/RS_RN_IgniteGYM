@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native'
 
 import { VStack, Image, Text, Center, Heading, ScrollView, useToast } from "native-base";
@@ -18,6 +19,7 @@ import { useForm, Controller } from 'react-hook-form'
 // API
 import { api } from '@services/api';
 import { AppError } from '@utils/AppError';
+import { useAuth } from '@hooks/useAuth';
 
 type FormDataProps = {
   name: string;
@@ -42,6 +44,8 @@ const defaultInputValues = {
 }
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { signIn } = useAuth()
 
   // Forms
   const { control, handleSubmit, formState: { errors }, reset } = useForm<FormDataProps>({
@@ -58,12 +62,19 @@ export function SignUp() {
   async function handleRegisterUser({ name, email, password }: FormDataProps) {
 
     try {
-      const response = await api.post('/users', {
+      setIsLoading(true)
+
+      // Criando conta
+      await api.post('/users', {
         name, email, password
       })
 
-      console.log(response.data)
+      // Fazendo o login após a criação da conta
+      await signIn(email, password)
+
     } catch (error) {
+      setIsLoading(false)
+
       const isAppError = error instanceof AppError
       const title = isAppError ? error.message : 'Não foi possível criar a conta'
 
@@ -173,6 +184,7 @@ export function SignUp() {
           <Button
             title="Criar e acessar"
             onPress={handleSubmit(handleRegisterUser)}
+            isLoading={isLoading}
           />
 
         </Center>
