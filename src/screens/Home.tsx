@@ -12,17 +12,18 @@ import { AppError } from "@utils/AppError";
 import { api } from "@services/api";
 
 import { ExercisesDTO } from "@dtos/ExercisesDTO";
+import { Loading } from "@components/Loading";
 
 export function Home() {
   const [groups, setGroups] = useState<string[]>([])
   const [exercises, setExercises] = useState<ExercisesDTO[]>([])
   const [groupSelected, setGroupSelected] = useState('costas')
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const toast = useToast()
 
   async function fetchExerciseGroups() {
     try {
-
       const response = await api.get('/groups')
 
       // console.log(response.data)
@@ -44,6 +45,7 @@ export function Home() {
 
   async function fetchExercisesByGroup() {
     try {
+      setIsLoading(true)
 
       const response = await api.get(`/exercises/bygroup/${groupSelected}`)
       // console.log(response.data)
@@ -59,6 +61,8 @@ export function Home() {
         placement: 'top',
         bgColor: 'red.500'
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -101,32 +105,36 @@ export function Home() {
         minH={10} // garantindo que a FlatList tenha uma altura mínima
       />
 
-      <VStack flex={1} px={8}>
-        <HStack justifyContent="space-between" mb={5}>
-          <Heading color="gray.200" fontSize="md" fontFamily="heading">
-            Exercícios
-          </Heading>
+      {isLoading ?
+        <Loading />
+        :
+        < VStack flex={1} px={8}>
+          <HStack justifyContent="space-between" mb={5}>
+            <Heading color="gray.200" fontSize="md" fontFamily="heading">
+              Exercícios
+            </Heading>
 
-          <Text color="gray.200" fontSize="sm" p={1} bg="gray.800" rounded="full">
-            {exercises.length}
-          </Text>
-        </HStack>
+            <Text color="gray.200" fontSize="sm" p={1} bg="gray.800" rounded="full">
+              {exercises.length}
+            </Text>
+          </HStack>
 
-        <FlatList
-          data={exercises}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <ExerciseCard
-              onPress={handleOpenExerciseDetails}
-              data={item}
-            />
-          )}
-          showsVerticalScrollIndicator={false}
-          _contentContainerStyle={{ paddingBottom: 20 }}
-        />
+          <FlatList
+            data={exercises}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <ExerciseCard
+                onPress={handleOpenExerciseDetails}
+                data={item}
+              />
+            )}
+            showsVerticalScrollIndicator={false}
+            _contentContainerStyle={{ paddingBottom: 20 }}
+          />
 
-      </VStack>
+        </VStack>
+      }
 
-    </VStack>
+    </VStack >
   )
 }
