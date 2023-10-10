@@ -9,8 +9,8 @@ import { useAuth } from '@hooks/useAuth'
 export function Routes() {
   const nativeBaseTheme = useTheme()
 
+  // se tiver conteúdo dentro de user -> usuário logado
   const { user } = useAuth()
-  console.log(user)
 
   const theme = DefaultTheme;
   theme.colors.background = nativeBaseTheme.colors.gray[700]
@@ -19,8 +19,7 @@ export function Routes() {
     // Box é para evitar um glith de navegação
     <Box flex={1} bg="gray.700">
       <NavigationContainer theme={theme}>
-        <AuthRoutes />
-        {/* <AppRoutes /> */}
+        {user.id ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </Box>
   )

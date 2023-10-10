@@ -2,6 +2,8 @@ import { ReactNode, createContext, useState } from "react";
 import { UserDTO } from "@dtos/UserDTO";
 import { api } from "@services/api";
 
+import { storageUserSave } from "@storage/storageUser";
+
 export type AuthContextDataProps = {
   user: UserDTO;
   signIn: (email: string, password: string) => Promise<void> // promise pq é async
@@ -24,6 +26,9 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       // Caso exista um usuário retornado pelo back-end
       if (response.data.user) {
         setUser(response.data.user)
+
+        // salvando os dados no storage
+        storageUserSave(response.data.user)
       }
 
     } catch (error) {
