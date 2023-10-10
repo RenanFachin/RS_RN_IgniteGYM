@@ -1,15 +1,21 @@
 import { HStack, Heading, Image, Text, VStack, Icon } from 'native-base'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { Entypo } from '@expo/vector-icons'
+import { ExercisesDTO } from '@dtos/ExercisesDTO'
 
-interface ExerciseCardProps extends TouchableOpacityProps { }
+import { api } from '@services/api'
 
-export function ExerciseCard({ ...props }: ExerciseCardProps) {
+interface ExerciseCardProps extends TouchableOpacityProps {
+  // data = todos os dados vindos da API e sendo repassados pelo componente
+  data: ExercisesDTO;
+}
+
+export function ExerciseCard({ data, ...props }: ExerciseCardProps) {
   return (
     <TouchableOpacity activeOpacity={0.6} {...props}>
       <HStack bg="gray.500" alignItems="center" p={2} pr={4} rounded="md" mb={3}>
         <Image
-          source={{ uri: 'https://thumb.mais.uol.com.br/16669847-large.jpg?ver=0' }}
+          source={{ uri: `${api.defaults.baseURL}/exercise/thumb/${data.thumb}` }}
           alt='Imagem do exercício'
           w={16}
           h={16}
@@ -20,15 +26,15 @@ export function ExerciseCard({ ...props }: ExerciseCardProps) {
 
         <VStack flex={1}>
           <Heading fontSize="lg" color="white" fontFamily="heading">
-            Serrote
+            {data.name}
           </Heading>
 
           <Text fontSize="sm" color="gray.200" mt={1} numberOfLines={2}>
-            3 séries x 10 repetições
+            {data.series} séries x {data.repetitions} repetições
           </Text>
         </VStack>
 
-        <Icon 
+        <Icon
           as={Entypo}
           name='chevron-thin-right'
           color="gray.300"
