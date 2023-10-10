@@ -5,15 +5,21 @@ import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
 
 import { useAuth } from '@hooks/useAuth'
+import { Loading } from '@components/Loading'
 
 export function Routes() {
   const nativeBaseTheme = useTheme()
 
   // se tiver conteúdo dentro de user -> usuário logado
-  const { user } = useAuth()
+  const { user, isLoadingUserStorageData } = useAuth()
 
   const theme = DefaultTheme;
   theme.colors.background = nativeBaseTheme.colors.gray[700]
+
+  // Caso isLoadingUserStorageData seja true, quer dizer que os dados ainda estão sendo carregados do storage e portanto, devemos mostrar um loading
+  if(isLoadingUserStorageData){
+    return <Loading />
+  }
 
   return (
     // Box é para evitar um glith de navegação
