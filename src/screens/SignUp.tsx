@@ -15,6 +15,9 @@ import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm, Controller } from 'react-hook-form'
 
+// API
+import { api } from '@services/api';
+
 type FormDataProps = {
   name: string;
   email: string;
@@ -52,19 +55,11 @@ export function SignUp() {
 
   async function handleRegisterUser({ name, email, password }: FormDataProps) {
 
-
-    await fetch('http://192.168.0.6:3333/users', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name, email, password
-      })
+    const response = await api.post('/users', {
+      name, email, password
     })
-      .then(response => response.json())
-      .then(data => console.log(data))
+
+    // console.log(response)
 
     reset(defaultInputValues)
 
