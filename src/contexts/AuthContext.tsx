@@ -2,7 +2,7 @@ import { ReactNode, createContext, useEffect, useState } from "react";
 import { UserDTO } from "@dtos/UserDTO";
 import { api } from "@services/api";
 
-import { storageAuthTokenSave } from "@storage/storageAuthToken"
+import { storageAuthTokenSave, storageAuthTokenGet, storageAuthTokenRemove } from "@storage/storageAuthToken"
 import { storageUserSave, storageUserGet, storageUserRemove } from "@storage/storageUser";
 
 export type AuthContextDataProps = {
@@ -23,18 +23,21 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState<boolean>(true)
 
-  async function storageUserAndToken(userData: UserDTO, token: string) {
+  async function userAndTokenUpdate(userData: UserDTO, token: string) {
+
+    // Anexando no cabeçalho das requisições o token
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+    setUser(userData)
+
+  }
+
+  async function storageUserAndTokenSave(userData: UserDTO, token: string) {
     try {
       setIsLoadingUserStorageData(true)
 
-      // Anexando no cabeçalho das requisições o token
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
       await storageUserSave(userData)
       await storageAuthTokenSave(token)
-      setUser(userData)
-
-
     } catch (error) {
       throw error;
     } finally {
@@ -48,23 +51,31 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
       // Caso exista um usuário retornado pelo back-end e exista o token jwt
       if (response.data.user && response.data.token) {
+        setIsLoadingUserStorageData(true)
+
+        await storageUserAndTokenSave(response.data.user, response.data.token)
+
         // salvando os dados no storage e o token
-        storageUserAndToken(response.data.user, response.data.token)
+        userAndTokenUpdate(response.data.user, response.data.token)
       }
 
     } catch (error) {
       throw error;
+    } finally {
+      setIsLoadingUserStorageData(false)
     }
   }
 
   async function loadUserDataFromStorage() {
     try {
+      setIsLoadingUserStorageData(true)
+
       // Caso exista algo no storage do usuário, atualizar o state
       const userLogged = await storageUserGet()
+      const token = await storageAuthTokenGet()
 
-      if (userLogged) {
-        setUser(userLogged)
-        setIsLoadingUserStorageData(false)
+      if (token && userLogged) {
+        userAndTokenUpdate(userLogged, token)
       }
     } catch (error) {
       throw error
@@ -82,6 +93,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
       // Limpando o storage
       await storageUserRemove()
+      await storageAuthTokenRemove()
 
     } catch (error) {
       throw error
