@@ -72,123 +72,120 @@ export function SignUp() {
         placement: 'top',
         bgColor: 'red.500'
       })
-
-
-      }
-
+    }
 
     reset(defaultInputValues)
 
   }
 
-    return (
-      <ScrollView _contentContainerStyle={
-        { flexGrow: 1 }} // forçando a ocupação da página toda
-        showsVerticalScrollIndicator={false}
-      >
-        <VStack flex={1} px={10} pb={16}>
-          <Image
-            source={BackgroundImg}
-            defaultSource={BackgroundImg}
-            alt='Imagem de fundo da aplicação contendo duas pessoas realizando um treino'
-            resizeMode='contain' // faz a imagem não se esticar
-            position="absolute" // faz começar do topo
+  return (
+    <ScrollView _contentContainerStyle={
+      { flexGrow: 1 }} // forçando a ocupação da página toda
+      showsVerticalScrollIndicator={false}
+    >
+      <VStack flex={1} px={10} pb={16}>
+        <Image
+          source={BackgroundImg}
+          defaultSource={BackgroundImg}
+          alt='Imagem de fundo da aplicação contendo duas pessoas realizando um treino'
+          resizeMode='contain' // faz a imagem não se esticar
+          position="absolute" // faz começar do topo
+        />
+
+        <Center my={24}>
+          <LogoSvg />
+
+          <Text color={'gray.100'} fontSize={'sm'}>
+            Treine sua mente e seu corpo
+          </Text>
+        </Center>
+
+        <Center >
+          <Heading color={'gray.100'} fontSize={'xl'} mb={6} fontFamily={'heading'}>
+            Crie sua conta
+          </Heading>
+
+          <Controller
+            control={control}
+            name="name"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Nome"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.name?.message}
+              />
+            )}
           />
 
-          <Center my={24}>
-            <LogoSvg />
-
-            <Text color={'gray.100'} fontSize={'sm'}>
-              Treine sua mente e seu corpo
-            </Text>
-          </Center>
-
-          <Center >
-            <Heading color={'gray.100'} fontSize={'xl'} mb={6} fontFamily={'heading'}>
-              Crie sua conta
-            </Heading>
-
-            <Controller
-              control={control}
-              name="name"
-              // dizer o input
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Nome"
-                  onChangeText={onChange}
-                  value={value}
-                  errorMessage={errors.name?.message}
-                />
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="email"
-              // dizer o input
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="E-mail"
-                  keyboardType='email-address'
-                  autoCapitalize='none'
-                  onChangeText={onChange}
-                  value={value}
-                  errorMessage={errors.email?.message}
-                />
-              )}
-            />
+          <Controller
+            control={control}
+            name="email"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="E-mail"
+                keyboardType='email-address'
+                autoCapitalize='none'
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.email?.message}
+              />
+            )}
+          />
 
 
-            <Controller
-              control={control}
-              name="password"
-              // dizer o input
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Senha"
-                  secureTextEntry={true}
-                  onChangeText={onChange}
-                  value={value}
-                  errorMessage={errors.password?.message}
-                />
-              )}
-            />
+          <Controller
+            control={control}
+            name="password"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Senha"
+                secureTextEntry={true}
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.password?.message}
+              />
+            )}
+          />
 
-            <Controller
-              control={control}
-              name="confirmPassword"
-              // dizer o input
-              render={({ field: { onChange, value } }) => (
-                <Input
-                  placeholder="Digite a senha novamente"
-                  secureTextEntry={true}
-                  onChangeText={onChange}
-                  value={value}
-                  // Fazendo o usuário conseguir enviar a partir do teclado
-                  onSubmitEditing={handleSubmit(handleRegisterUser)}
-                  returnKeyType="send"
-                  errorMessage={errors.confirmPassword?.message}
-                />
-              )}
-            />
-
-
-            <Button
-              title="Criar e acessar"
-              onPress={handleSubmit(handleRegisterUser)}
-            />
-
-          </Center>
+          <Controller
+            control={control}
+            name="confirmPassword"
+            // dizer o input
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Digite a senha novamente"
+                secureTextEntry={true}
+                onChangeText={onChange}
+                value={value}
+                // Fazendo o usuário conseguir enviar a partir do teclado
+                onSubmitEditing={handleSubmit(handleRegisterUser)}
+                returnKeyType="send"
+                errorMessage={errors.confirmPassword?.message}
+              />
+            )}
+          />
 
 
           <Button
-            title="Voltar para o login"
-            variant="outline"
-            mt={16}
-            onPress={handleGoBack}
+            title="Criar e acessar"
+            onPress={handleSubmit(handleRegisterUser)}
           />
 
-        </VStack >
-      </ScrollView>
-    )
-  }
+        </Center>
+
+
+        <Button
+          title="Voltar para o login"
+          variant="outline"
+          mt={16}
+          onPress={handleGoBack}
+        />
+
+      </VStack >
+    </ScrollView>
+  )
+}
