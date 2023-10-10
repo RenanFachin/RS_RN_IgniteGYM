@@ -2,6 +2,7 @@ import { ReactNode, createContext, useEffect, useState } from "react";
 import { UserDTO } from "@dtos/UserDTO";
 import { api } from "@services/api";
 
+import { storageAuthTokenSave } from "@storage/storageAuthToken"
 import { storageUserSave, storageUserGet, storageUserRemove } from "@storage/storageUser";
 
 export type AuthContextDataProps = {
@@ -22,16 +23,33 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [user, setUser] = useState<UserDTO>({} as UserDTO)
   const [isLoadingUserStorageData, setIsLoadingUserStorageData] = useState<boolean>(true)
 
+  async function storageUserAndToken(userData: UserDTO, token: string) {
+    try {
+      setIsLoadingUserStorageData(true)
+
+      // Anexando no cabeçalho das requisições o token
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+      await storageUserSave(userData)
+      await storageAuthTokenSave(token)
+      setUser(userData)
+
+
+    } catch (error) {
+      throw error;
+    } finally {
+      setIsLoadingUserStorageData(false)
+    }
+  }
+
   async function signIn(email: string, password: string) {
     try {
       const response = await api.post('/sessions', { email, password })
 
-      // Caso exista um usuário retornado pelo back-end
-      if (response.data.user) {
-        setUser(response.data.user)
-
-        // salvando os dados no storage
-        storageUserSave(response.data.user)
+      // Caso exista um usuário retornado pelo back-end e exista o token jwt
+      if (response.data.user && response.data.token) {
+        // salvando os dados no storage e o token
+        storageUserAndToken(response.data.user, response.data.token)
       }
 
     } catch (error) {

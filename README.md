@@ -29,13 +29,14 @@ Para maior produtividade e customizações é utilizado o native-base como compo
 - react-native-svg
 - expo-image-picker
 - expo-file-system
+- react-native-async-storage/async-storage
 
 ## Requisitos funcionais
 O que é possível que o usuário faça na aplicação.
 
-- [ ] Deve ser possível se cadastrar na aplicação
-- [ ] Deve ser possível realizar autenticação
-- [ ] Deve ser possível obter o perfil de um usuário autenticado
+- [x] Deve ser possível se cadastrar na aplicação
+- [x] Deve ser possível realizar autenticação
+- [x] Deve ser possível obter o perfil de um usuário autenticado
 - [ ] Deve ser possível obter o histórico de exercícios realizados
 - [ ] Deve ser possível obter os exercícios com base nos grupos musculares
 - [ ] Deve ser possível marcar como realizado um exercício
@@ -43,15 +44,15 @@ O que é possível que o usuário faça na aplicação.
 - [ ] Deve ser possível realizar a troca da imagem de perfil do usuário
 
 ## Regras de negócio
-- [ ] O usuário não deve poder se cadastrar com um e-mail duplicado
+- [x] O usuário não deve poder se cadastrar com um e-mail duplicado
 - [x] A imagem de perfil do usuário não deve poder ter tamanho superior a 15MB
-- [ ] Usuários não autenticados não podem ter acesso as rotas da aplicação
+- [x] Usuários não autenticados não podem ter acesso as rotas da aplicação
 
 
 ## Requisitos não funcionais
-- [ ] A senha do usuário precisa estar criptografada
-- [ ] A senha do usuário deve ter ao menos 6 caracteres
-- [ ] Os dados da aplicação precisam ser persistidos
+- [x] A senha do usuário precisa estar criptografada
+- [x] A senha do usuário deve ter ao menos 6 caracteres
+- [x] Os dados da aplicação precisam ser persistidos
 - [ ] O usuário deve ser identificado por um JWT
 - [x] As rotas de autenticação devem ser StackNavigator
 - [x] As rotas da aplicação devem ser TabNavigator
