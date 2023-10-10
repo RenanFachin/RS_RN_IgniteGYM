@@ -1,8 +1,8 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 import { UserDTO } from "@dtos/UserDTO";
 import { api } from "@services/api";
 
-import { storageUserSave } from "@storage/storageUser";
+import { storageUserSave, storageUserGet } from "@storage/storageUser";
 
 export type AuthContextDataProps = {
   user: UserDTO;
@@ -35,6 +35,19 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       throw error;
     }
   }
+
+  async function loadUserDataFromStorage() {
+    // Caso exista algo no storage do usuário, atualizar o state
+    const userLogged = await storageUserGet()
+
+    if (userLogged) {
+      setUser(userLogged)
+    }
+  }
+
+  useEffect(() => {
+    loadUserDataFromStorage()
+  }, [])
 
   return (
     <AuthContext.Provider value={{ user: user, signIn }}>
