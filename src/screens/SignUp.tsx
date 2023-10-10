@@ -17,7 +17,7 @@ import { useForm, Controller } from 'react-hook-form'
 
 // API
 import { api } from '@services/api';
-import axios from 'axios';
+import { AppError } from '@utils/AppError';
 
 type FormDataProps = {
   name: string;
@@ -64,130 +64,131 @@ export function SignUp() {
 
       console.log(response.data)
     } catch (error) {
-      if(axios.isAxiosError(error)){
-        return toast.show({
-          title: (error.response?.data.message),
-          placement: 'top',
-          bgColor: 'red.500'
-        })
-      }
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : 'Não foi possível criar a conta'
 
-      console.log(error)
-    }
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+
+
+      }
 
 
     reset(defaultInputValues)
 
   }
 
-  return (
-    <ScrollView _contentContainerStyle={
-      { flexGrow: 1 }} // forçando a ocupação da página toda
-      showsVerticalScrollIndicator={false}
-    >
-      <VStack flex={1} px={10} pb={16}>
-        <Image
-          source={BackgroundImg}
-          defaultSource={BackgroundImg}
-          alt='Imagem de fundo da aplicação contendo duas pessoas realizando um treino'
-          resizeMode='contain' // faz a imagem não se esticar
-          position="absolute" // faz começar do topo
-        />
-
-        <Center my={24}>
-          <LogoSvg />
-
-          <Text color={'gray.100'} fontSize={'sm'}>
-            Treine sua mente e seu corpo
-          </Text>
-        </Center>
-
-        <Center >
-          <Heading color={'gray.100'} fontSize={'xl'} mb={6} fontFamily={'heading'}>
-            Crie sua conta
-          </Heading>
-
-          <Controller
-            control={control}
-            name="name"
-            // dizer o input
-            render={({ field: { onChange, value } }) => (
-              <Input
-                placeholder="Nome"
-                onChangeText={onChange}
-                value={value}
-                errorMessage={errors.name?.message}
-              />
-            )}
+    return (
+      <ScrollView _contentContainerStyle={
+        { flexGrow: 1 }} // forçando a ocupação da página toda
+        showsVerticalScrollIndicator={false}
+      >
+        <VStack flex={1} px={10} pb={16}>
+          <Image
+            source={BackgroundImg}
+            defaultSource={BackgroundImg}
+            alt='Imagem de fundo da aplicação contendo duas pessoas realizando um treino'
+            resizeMode='contain' // faz a imagem não se esticar
+            position="absolute" // faz começar do topo
           />
 
-          <Controller
-            control={control}
-            name="email"
-            // dizer o input
-            render={({ field: { onChange, value } }) => (
-              <Input
-                placeholder="E-mail"
-                keyboardType='email-address'
-                autoCapitalize='none'
-                onChangeText={onChange}
-                value={value}
-                errorMessage={errors.email?.message}
-              />
-            )}
-          />
+          <Center my={24}>
+            <LogoSvg />
+
+            <Text color={'gray.100'} fontSize={'sm'}>
+              Treine sua mente e seu corpo
+            </Text>
+          </Center>
+
+          <Center >
+            <Heading color={'gray.100'} fontSize={'xl'} mb={6} fontFamily={'heading'}>
+              Crie sua conta
+            </Heading>
+
+            <Controller
+              control={control}
+              name="name"
+              // dizer o input
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Nome"
+                  onChangeText={onChange}
+                  value={value}
+                  errorMessage={errors.name?.message}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="email"
+              // dizer o input
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="E-mail"
+                  keyboardType='email-address'
+                  autoCapitalize='none'
+                  onChangeText={onChange}
+                  value={value}
+                  errorMessage={errors.email?.message}
+                />
+              )}
+            />
 
 
-          <Controller
-            control={control}
-            name="password"
-            // dizer o input
-            render={({ field: { onChange, value } }) => (
-              <Input
-                placeholder="Senha"
-                secureTextEntry={true}
-                onChangeText={onChange}
-                value={value}
-                errorMessage={errors.password?.message}
-              />
-            )}
-          />
+            <Controller
+              control={control}
+              name="password"
+              // dizer o input
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Senha"
+                  secureTextEntry={true}
+                  onChangeText={onChange}
+                  value={value}
+                  errorMessage={errors.password?.message}
+                />
+              )}
+            />
 
-          <Controller
-            control={control}
-            name="confirmPassword"
-            // dizer o input
-            render={({ field: { onChange, value } }) => (
-              <Input
-                placeholder="Digite a senha novamente"
-                secureTextEntry={true}
-                onChangeText={onChange}
-                value={value}
-                // Fazendo o usuário conseguir enviar a partir do teclado
-                onSubmitEditing={handleSubmit(handleRegisterUser)}
-                returnKeyType="send"
-                errorMessage={errors.confirmPassword?.message}
-              />
-            )}
-          />
+            <Controller
+              control={control}
+              name="confirmPassword"
+              // dizer o input
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Digite a senha novamente"
+                  secureTextEntry={true}
+                  onChangeText={onChange}
+                  value={value}
+                  // Fazendo o usuário conseguir enviar a partir do teclado
+                  onSubmitEditing={handleSubmit(handleRegisterUser)}
+                  returnKeyType="send"
+                  errorMessage={errors.confirmPassword?.message}
+                />
+              )}
+            />
+
+
+            <Button
+              title="Criar e acessar"
+              onPress={handleSubmit(handleRegisterUser)}
+            />
+
+          </Center>
 
 
           <Button
-            title="Criar e acessar"
-            onPress={handleSubmit(handleRegisterUser)}
+            title="Voltar para o login"
+            variant="outline"
+            mt={16}
+            onPress={handleGoBack}
           />
 
-        </Center>
-
-
-        <Button
-          title="Voltar para o login"
-          variant="outline"
-          mt={16}
-          onPress={handleGoBack}
-        />
-
-      </VStack >
-    </ScrollView>
-  )
-}
+        </VStack >
+      </ScrollView>
+    )
+  }
