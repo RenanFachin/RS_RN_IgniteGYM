@@ -11,14 +11,33 @@ import BackgroundImg from '@assets/background.png'
 // https://github.com/kristerkari/react-native-svg-transformer
 import LogoSvg from '@assets/logo.svg'
 
+// contexto
+import { useAuth } from '@hooks/useAuth'
+
+// Form
+import { Controller, useForm } from 'react-hook-form'
+
+type FormData = {
+  email: string;
+  password: string;
+}
 
 
 export function SignIn() {
+  const { signIn } = useAuth()
+
   // Passando a definição de tipagem para o navigation (de acordo com o contexto, neste caso, o de auth)
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
-  function handleNewAccount(){
+  // form
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>()
+
+  function handleNewAccount() {
     navigation.navigate('register')
+  }
+
+  function handleSignIn({ email, password }: FormData) {
+    signIn(email, password)
   }
 
   return (
@@ -48,18 +67,41 @@ export function SignIn() {
             Acesse sua conta
           </Heading>
 
-          <Input
-            placeholder="E-mail"
-            keyboardType='email-address'
-            autoCapitalize='none'
+          <Controller
+            control={control}
+            name='email'
+            rules={{ required: 'Informe o e-mail' }}
+            render={({ field: { onChange } }) => (
+              <Input
+                placeholder="E-mail"
+                keyboardType='email-address'
+                autoCapitalize='none'
+                onChangeText={onChange}
+                errorMessage={errors.email?.message}
+              />
+            )}
+
           />
 
-          <Input
-            placeholder="Senha"
-            secureTextEntry={true}
+          <Controller
+            control={control}
+            name='password'
+            rules={{ required: 'Informe o e-mail' }}
+            render={({ field: { onChange } }) => (
+              <Input
+                placeholder="Senha"
+                secureTextEntry={true}
+                onChangeText={onChange}
+                errorMessage={errors.email?.message}
+              />
+            )}
+
           />
 
-          <Button title="Acessar" />
+          <Button
+            title="Acessar"
+            onPress={handleSubmit(handleSignIn)}
+          />
 
         </Center>
 
