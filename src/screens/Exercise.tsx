@@ -3,6 +3,7 @@ import { HStack, Heading, Icon, Image, Text, VStack, Box, ScrollView, useToast }
 import { TouchableOpacity } from "react-native";
 import { Feather } from '@expo/vector-icons'
 import { Button } from "@components/Button";
+import { Loading } from "@components/Loading";
 
 import BodySVG from '@assets/body.svg'
 import SeriesSVG from '@assets/series.svg'
@@ -15,7 +16,6 @@ import { AppNavigatorRoutesProps } from "@routes/app.routes";
 import { AppError } from "@utils/AppError";
 import { api } from "@services/api";
 import { ExercisesDTO } from "@dtos/ExercisesDTO";
-import { Loading } from "@components/Loading";
 
 type RouteParamsProps = {
   exerciseId: string
