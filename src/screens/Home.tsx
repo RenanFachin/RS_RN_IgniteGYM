@@ -17,7 +17,7 @@ import { Loading } from "@components/Loading";
 export function Home() {
   const [groups, setGroups] = useState<string[]>([])
   const [exercises, setExercises] = useState<ExercisesDTO[]>([])
-  const [groupSelected, setGroupSelected] = useState('costas')
+  const [groupSelected, setGroupSelected] = useState('antebraço')
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const toast = useToast()

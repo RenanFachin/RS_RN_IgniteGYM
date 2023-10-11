@@ -24,9 +24,11 @@ type RouteParamsProps = {
 export function Exercise() {
   // Este isLoading é para garantir que o gif já tenha sido carregado antes de renderizar em tela
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isSubmittingRegister, setIsSubmittingRegister] = useState<boolean>(false)
 
   const [exerciseDetail, setExerciseDetail] = useState<ExercisesDTO>({} as ExercisesDTO)
 
+  // navegação
   const navigation = useNavigation<AppNavigatorRoutesProps>()
 
   // Obtendo os dados que vem da rota
@@ -59,6 +61,39 @@ export function Exercise() {
       })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  async function handleRegisterExercise() {
+    try {
+      setIsSubmittingRegister(true)
+
+      await api.post('/history', { exercise_id: exerciseId })
+
+
+      // feedback para o usuário
+      toast.show({
+        title: 'Parabéns! Exercício registrado.',
+        placement: 'top',
+        bgColor: 'green.700'
+      })
+
+      // Navegando o usuário para página de histórico
+      navigation.navigate('history')
+
+
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const title = isAppError ? error.message : 'Não foi possível registrar o exercício'
+
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+    } finally {
+      setIsSubmittingRegister(false)
     }
   }
 
@@ -132,6 +167,8 @@ export function Exercise() {
 
                 <Button
                   title="Marcar como realizado"
+                  isLoading={isSubmittingRegister}
+                  onPress={handleRegisterExercise}
                 />
               </Box>
             </VStack>
