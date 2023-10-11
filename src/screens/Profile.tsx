@@ -18,6 +18,10 @@ import { TouchableOpacity } from "react-native";
 // Form
 import { Controller, useForm } from 'react-hook-form'
 import { useAuth } from "@hooks/useAuth";
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { api } from "@services/api";
+import { AppError } from "@utils/AppError";
 
 const PHOTO_SIZE = 33
 
@@ -29,22 +33,67 @@ type FormDataProps = {
   confirm_password: string;
 }
 
+const profileValidationSchema = yup.object({
+  name: yup.string().required('Informe o nome.'),
+  password: yup.string().min(6, 'A senha deve ter pelo menos 6 dígitos.').nullable().transform((value) => !!value ? value : null),
+  confirm_password: yup
+    .string()
+    .nullable()
+    .transform((value) => !!value ? value : null)
+    .oneOf([yup.ref('password'), null], 'A confirmação de senha não confere.')
+    .when('password', {
+      is: (Field: any) => Field,
+      then: (schema) => schema.nullable().required('Informe a confirmação da senha').transform((value) => !!value ? value : null).transform((value) => !!value ? value : null)
+    }),
+})
+
 export function Profile() {
+  const [isUpadtingUserData, setIsUpadtingUserData] = useState<boolean>(false)
   const [isPhotoLoaded, setIsPhotoLoaded] = useState<boolean>(false)
   const [userPhoto, setUserPhoto] = useState<string>('')
 
   const toast = useToast()
-  const { user } = useAuth()
+  const { user, updateUserProfile } = useAuth()
 
-  const { control, handleSubmit } = useForm<FormDataProps>({
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
     defaultValues: {
       name: user.name,
       email: user.email
-    }
+    },
+    resolver: yupResolver(profileValidationSchema)
   })
 
   async function handleProfileUpdate(data: FormDataProps) {
-    console.log(data)
+    try {
+      setIsUpadtingUserData(true)
+
+
+      const userUpdated = user
+      userUpdated.name = data.name
+
+      await api.put('/users', data)
+
+      await updateUserProfile(userUpdated)
+
+      toast.show({
+        title: 'Perfil atualizado com sucesso!',
+        placement: 'top',
+        bgColor: 'green.500'
+      }) 
+
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const title = isAppError ? error.message : 'Não foi possível atualizar os dados.'
+
+      toast.show({
+        title: title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+    } finally {
+      setIsUpadtingUserData(false)
+    }
   }
 
   async function handleUserPhotoSelect() {
@@ -140,6 +189,7 @@ export function Profile() {
                 placeholder="Nome"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.name?.message}
               />
             )}
           />
@@ -188,6 +238,7 @@ export function Profile() {
                 placeholder="Nova senha"
                 secureTextEntry={true}
                 onChangeText={onChange}
+                errorMessage={errors.password?.message}
               />
             )}
           />
@@ -201,6 +252,7 @@ export function Profile() {
                 placeholder="Confirme a nova senha"
                 secureTextEntry={true}
                 onChangeText={onChange}
+                errorMessage={errors.confirm_password?.message}
               />
             )}
           />
@@ -212,6 +264,7 @@ export function Profile() {
             mt={4}
             title="Atualizar"
             onPress={handleSubmit(handleProfileUpdate)}
+            isLoading={isUpadtingUserData}
           />
         </VStack>
       </ScrollView>
