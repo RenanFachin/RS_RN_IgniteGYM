@@ -50,7 +50,7 @@ export function History() {
         sections={exercises}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <HistoryCard />
+          <HistoryCard data={item}/>
         )}
         // renderizando o cabeçalho da lista
         renderSectionHeader={({section}) => (
