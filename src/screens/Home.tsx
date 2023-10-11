@@ -67,8 +67,9 @@ export function Home() {
   }
 
   const navigation = useNavigation<AppNavigatorRoutesProps>()
-  function handleOpenExerciseDetails() {
-    navigation.navigate('exercise')
+
+  function handleOpenExerciseDetails(id: string) {
+    navigation.navigate(`exercise`, { exerciseId: id })
   }
 
 
@@ -124,7 +125,7 @@ export function Home() {
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
               <ExerciseCard
-                onPress={handleOpenExerciseDetails}
+                onPress={() => handleOpenExerciseDetails(item.id)}
                 data={item}
               />
             )}
