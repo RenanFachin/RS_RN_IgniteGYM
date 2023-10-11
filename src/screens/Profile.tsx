@@ -10,20 +10,42 @@ import * as ImagePicker from 'expo-image-picker'
 // File System - https://docs.expo.dev/versions/latest/sdk/filesystem/
 import * as FileSystem from 'expo-file-system';
 
-
 // https://docs.nativebase.io/skeleton
 // https://docs.nativebase.io/toast
 import { Center, ScrollView, VStack, Skeleton, Text, Heading, useToast } from "native-base";
 import { TouchableOpacity } from "react-native";
 
+// Form
+import { Controller, useForm } from 'react-hook-form'
+import { useAuth } from "@hooks/useAuth";
 
 const PHOTO_SIZE = 33
+
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  old_password: string;
+  confirm_password: string;
+}
 
 export function Profile() {
   const [isPhotoLoaded, setIsPhotoLoaded] = useState<boolean>(false)
   const [userPhoto, setUserPhoto] = useState<string>('')
 
   const toast = useToast()
+  const { user } = useAuth()
+
+  const { control, handleSubmit } = useForm<FormDataProps>({
+    defaultValues: {
+      name: user.name,
+      email: user.email
+    }
+  })
+
+  async function handleProfileUpdate(data: FormDataProps) {
+    console.log(data)
+  }
 
   async function handleUserPhotoSelect() {
     setIsPhotoLoaded(true)
@@ -99,7 +121,7 @@ export function Profile() {
                 }}
                 alt="Foto de perfil do usuário"
                 size={PHOTO_SIZE}
-                mr={6}
+              // mr={6}
               />
           }
 
@@ -109,17 +131,34 @@ export function Profile() {
             </Text>
           </TouchableOpacity>
 
-
-          <Input
-            bg="gray.600"
-            placeholder="Nome"
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Nome"
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
           />
 
-          <Input
-            bg="gray.400"
-            placeholder="E-mail"
-            isDisabled={true}
+
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <Input
+                bg="gray.400"
+                placeholder="E-mail"
+                isDisabled={true}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
           />
+
         </Center>
 
         <VStack px={10} mt={10} mb={9}>
@@ -127,27 +166,52 @@ export function Profile() {
             Alterar senha
           </Heading>
 
-          <Input
-            bg="gray.600"
-            placeholder="Senha antiga"
-            secureTextEntry={true}
+          <Controller
+            control={control}
+            name="old_password"
+            render={({ field: { onChange } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Senha antiga"
+                secureTextEntry={true}
+                onChangeText={onChange}
+              />
+            )}
           />
 
-          <Input
-            bg="gray.600"
-            placeholder="Nova senha"
-            secureTextEntry={true}
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Nova senha"
+                secureTextEntry={true}
+                onChangeText={onChange}
+              />
+            )}
           />
 
-          <Input
-            bg="gray.600"
-            placeholder="Confirme a nova senha"
-            secureTextEntry={true}
+          <Controller
+            control={control}
+            name="confirm_password"
+            render={({ field: { onChange } }) => (
+              <Input
+                bg="gray.600"
+                placeholder="Confirme a nova senha"
+                secureTextEntry={true}
+                onChangeText={onChange}
+              />
+            )}
           />
+
+
+
 
           <Button
             mt={4}
             title="Atualizar"
+            onPress={handleSubmit(handleProfileUpdate)}
           />
         </VStack>
       </ScrollView>
