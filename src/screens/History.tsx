@@ -3,6 +3,7 @@ import { Heading, VStack, SectionList, Text, useToast } from "native-base";
 
 import { HistoryCard } from "@components/HistoryCard";
 import { ScreenHeader } from "@components/ScreenHeader"
+import { Loading } from '@components/Loading';
 
 import { AppError } from '@utils/AppError';
 import { api } from '@services/api';
@@ -15,13 +16,13 @@ export function History() {
 
   const toast = useToast()
 
-  async function fetchUserExerciseHistory(){
+  async function fetchUserExerciseHistory() {
     try {
       setIsLoading(true)
       const response = await api.get('/history')
 
       setExercises(response.data)
-      
+
     } catch (error) {
       const isAppError = error instanceof AppError
 
@@ -37,37 +38,40 @@ export function History() {
     }
   }
 
-    // Executando quando o focus voltar para a interface de home
-    useFocusEffect(useCallback(() => {
-      fetchUserExerciseHistory()
-    }, []))
+  // Executando quando o focus voltar para a interface de home
+  useFocusEffect(useCallback(() => {
+    fetchUserExerciseHistory()
+  }, []))
 
   return (
     <VStack flex={1}>
       <ScreenHeader title="Histórico de Exercícios" />
 
-      <SectionList
-        sections={exercises}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <HistoryCard data={item}/>
-        )}
-        // renderizando o cabeçalho da lista
-        renderSectionHeader={({section}) => (
-          <Heading color="gray.300" fontSize="sm" mt={8} mb={2} fontFamily="heading"> 
-            {section.title}
-          </Heading>
-        )}
-        px={4}
-        // estilizando lista vazia
-        contentContainerStyle={exercises.length === 0 && {flex: 1, justifyContent: "center"}}
-        ListEmptyComponent={() => (
-          <Text color="gray.100" textAlign="center">
-            Não há exercícios registrados.
-          </Text>
-        )}
-        showsVerticalScrollIndicator={false}
-      />
+      {
+        isLoading ? <Loading /> :
+          <SectionList
+            sections={exercises}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <HistoryCard data={item} />
+            )}
+            // renderizando o cabeçalho da lista
+            renderSectionHeader={({ section }) => (
+              <Heading color="gray.300" fontSize="sm" mt={8} mb={2} fontFamily="heading">
+                {section.title}
+              </Heading>
+            )}
+            px={4}
+            // estilizando lista vazia
+            contentContainerStyle={exercises.length === 0 && { flex: 1, justifyContent: "center" }}
+            ListEmptyComponent={() => (
+              <Text color="gray.100" textAlign="center">
+                Não há exercícios registrados.
+              </Text>
+            )}
+            showsVerticalScrollIndicator={false}
+          />
+      }
     </VStack>
   )
 }
