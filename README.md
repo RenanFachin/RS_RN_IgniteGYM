@@ -37,11 +37,11 @@ O que é possível que o usuário faça na aplicação.
 - [x] Deve ser possível se cadastrar na aplicação
 - [x] Deve ser possível realizar autenticação
 - [x] Deve ser possível obter o perfil de um usuário autenticado
-- [ ] Deve ser possível obter o histórico de exercícios realizados
-- [ ] Deve ser possível obter os exercícios com base nos grupos musculares
-- [ ] Deve ser possível marcar como realizado um exercício
-- [ ] Deve ser possível realizar a alteração da senha
-- [ ] Deve ser possível realizar a troca da imagem de perfil do usuário
+- [x] Deve ser possível obter o histórico de exercícios realizados
+- [x] Deve ser possível obter os exercícios com base nos grupos musculares
+- [x] Deve ser possível marcar como realizado um exercício
+- [x] Deve ser possível realizar a alteração da senha
+- [x] Deve ser possível realizar a troca da imagem de perfil do usuário
 
 ## Regras de negócio
 - [x] O usuário não deve poder se cadastrar com um e-mail duplicado
@@ -53,7 +53,7 @@ O que é possível que o usuário faça na aplicação.
 - [x] A senha do usuário precisa estar criptografada
 - [x] A senha do usuário deve ter ao menos 6 caracteres
 - [x] Os dados da aplicação precisam ser persistidos
-- [ ] O usuário deve ser identificado por um JWT
+- [x] O usuário deve ser identificado por um JWT
 - [x] As rotas de autenticação devem ser StackNavigator
 - [x] As rotas da aplicação devem ser TabNavigator
 
