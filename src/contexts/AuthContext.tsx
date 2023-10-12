@@ -33,12 +33,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   }
 
-  async function storageUserAndTokenSave(userData: UserDTO, token: string) {
+  async function storageUserAndTokenSave(userData: UserDTO, token: string, refresh_token: string) {
     try {
       setIsLoadingUserStorageData(true)
 
       await storageUserSave(userData)
-      await storageAuthTokenSave(token)
+      await storageAuthTokenSave({ token, refresh_token })
     } catch (error) {
       throw error;
     } finally {
@@ -51,10 +51,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       const response = await api.post('/sessions', { email, password })
 
       // Caso exista um usuário retornado pelo back-end e exista o token jwt
-      if (response.data.user && response.data.token) {
+      if (response.data.user && response.data.token && response.data.refresh_token) {
         setIsLoadingUserStorageData(true)
 
-        await storageUserAndTokenSave(response.data.user, response.data.token)
+        await storageUserAndTokenSave(response.data.user, response.data.token, response.data.refresh_token)
 
         // salvando os dados no storage e o token
         userAndTokenUpdate(response.data.user, response.data.token)
@@ -73,7 +73,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
       // Caso exista algo no storage do usuário, atualizar o state
       const userLogged = await storageUserGet()
-      const token = await storageAuthTokenGet()
+      const { token } = await storageAuthTokenGet()
 
       if (token && userLogged) {
         userAndTokenUpdate(userLogged, token)
@@ -118,6 +118,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     loadUserDataFromStorage()
 
   }, [])
+
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager(signOut)
+
+    return () => {
+      subscribe()
+    }
+  }, [signOut])
 
   return (
     <AuthContext.Provider value={{ user: user, signIn, isLoadingUserStorageData, signOut, updateUserProfile }}>
